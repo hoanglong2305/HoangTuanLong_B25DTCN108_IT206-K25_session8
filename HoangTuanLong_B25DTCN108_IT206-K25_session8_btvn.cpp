@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 
-// Ğ?nh nghia struct Student
 struct Student {
     int id;
     char name[50];
@@ -9,15 +8,12 @@ struct Student {
     float gpa;
 };
 
-// Hàm in danh sách sinh viên du?i d?ng b?ng
 void printStudentTable(struct Student students[], int count) {
-    // In header c?a b?ng
     printf("\n");
     printf("+------+----------------------+------+-------+\n");
     printf("| ID   | Ho Ten               | Tuoi | GPA   |\n");
     printf("+------+----------------------+------+-------+\n");
     
-    // In t?ng sinh viên
     for (int i = 0; i < count; i++) {
         printf("| %-4d | %-20s | %-4d | %-5.2f |\n", 
                students[i].id, 
@@ -26,12 +22,10 @@ void printStudentTable(struct Student students[], int count) {
                students[i].gpa);
     }
     
-    // In footer c?a b?ng
     printf("+------+----------------------+------+-------+\n");
     printf("\n");
 }
 
-// Hàm nh?p thông tin sinh viên t? bàn phím
 void inputStudents(struct Student students[], int count) {
     printf("\n========== NHAP THONG TIN SINH VIEN ==========\n");
     for (int i = 0; i < count; i++) {
@@ -39,11 +33,10 @@ void inputStudents(struct Student students[], int count) {
         
         printf("Nhap ID: ");
         scanf("%d", &students[i].id);
-        getchar(); // Xóa kı t? xu?ng dòng còn l?i trong buffer
+        getchar();
         
         printf("Nhap ho ten: ");
         fgets(students[i].name, sizeof(students[i].name), stdin);
-        // Xóa kı t? xu?ng dòng ? cu?i chu?i n?u có
         int len = strlen(students[i].name);
         if (len > 0 && students[i].name[len - 1] == '\n') {
             students[i].name[len - 1] = '\0';
@@ -57,7 +50,6 @@ void inputStudents(struct Student students[], int count) {
     }
 }
 
-// Hàm luu danh sách sinh viên vào file b?t k? (ví d?: classA.txt, classB.txt, ...)
 void saveToFile(struct Student students[], int count, const char *filename) {
     FILE *file = fopen(filename, "w");
     
@@ -66,10 +58,8 @@ void saveToFile(struct Student students[], int count, const char *filename) {
         return;
     }
     
-    // Ghi s? lu?ng sinh viên tru?c
     fprintf(file, "%d\n", count);
     
-    // Ghi d? li?u t?ng sinh viên (d?ng d? d?c)
     for (int i = 0; i < count; i++) {
         fprintf(file, "%d\n%s\n%d\n%.2f\n",
                 students[i].id,
@@ -78,7 +68,6 @@ void saveToFile(struct Student students[], int count, const char *filename) {
                 students[i].gpa);
     }
     
-    // Ghi ph?n hi?n th? b?ng (d? xem d?p)
     fprintf(file, "\n========== DANH SACH SINH VIEN ==========\n");
     fprintf(file, "+------+----------------------+------+-------+\n");
     fprintf(file, "| ID   | Ho Ten               | Tuoi | GPA   |\n");
@@ -99,7 +88,6 @@ void saveToFile(struct Student students[], int count, const char *filename) {
     printf("\nDa luu danh sach sinh vien vao file %s thanh cong!\n", filename);
 }
 
-// Hàm d?c d? li?u t? file student.txt
 int readFromFile(struct Student students[], int maxCount) {
     FILE *file = fopen("student.txt", "r");
     
@@ -111,19 +99,14 @@ int readFromFile(struct Student students[], int maxCount) {
     int count;
     fscanf(file, "%d", &count);
     
-    // Ğ?m b?o không d?c quá maxCount
     if (count > maxCount) {
         count = maxCount;
     }
     
-    // Ğ?c t?ng sinh viên
     for (int i = 0; i < count; i++) {
         fscanf(file, "%d", &students[i].id);
-        // B? qua kı t? xu?ng dòng còn l?i sau khi d?c s?
         fgetc(file);
-        // Ğ?c tên (có th? ch?a kho?ng tr?ng)
         fgets(students[i].name, sizeof(students[i].name), file);
-        // Xóa kı t? xu?ng dòng ? cu?i chu?i n?u có
         int len = strlen(students[i].name);
         if (len > 0 && students[i].name[len - 1] == '\n') {
             students[i].name[len - 1] = '\0';
@@ -138,44 +121,41 @@ int readFromFile(struct Student students[], int maxCount) {
 }
 
 /**
- * Hàm tìm ki?m sinh viên theo ID
+ * HÃ m tÃ¬m ki?m sinh viÃªn theo ID
  * 
- * @param students M?ng ch?a danh sách sinh viên
- * @param count S? lu?ng sinh viên trong m?ng
- * @param id ID c?n tìm ki?m
- * @return Ch? s? c?a sinh viên trong m?ng n?u tìm th?y (>= 0), 
- *         -1 n?u không tìm th?y ho?c ID không h?p l? (âm)
+ * @param students M?ng ch?a danh sÃ¡ch sinh viÃªn
+ * @param count S? lu?ng sinh viÃªn trong m?ng
+ * @param id ID c?n tÃ¬m ki?m
+ * @return Ch? s? c?a sinh viÃªn trong m?ng n?u tÃ¬m th?y (>= 0), 
+ *         -1 n?u khÃ´ng tÃ¬m th?y ho?c ID khÃ´ng h?p l? (Ã¢m)
  * 
- * @note Hàm s? duy?t qua m?ng và so sánh ID c?a t?ng sinh viên v?i ID c?n tìm
- *       N?u ID là s? âm, hàm s? tr? v? -1 ngay l?p t?c
+ * @note HÃ m s? duy?t qua m?ng vÃ  so sÃ¡nh ID c?a t?ng sinh viÃªn v?i ID c?n tÃ¬m
+ *       N?u ID lÃ  s? Ã¢m, hÃ m s? tr? v? -1 ngay l?p t?c
  * 
  * @example
  *   struct Student students[3] = {{1, "Nguyen Van A", 20, 3.75}, ...};
  *   int index = searchByID(students, 3, 1);  // Tr? v? 0
- *   int index2 = searchByID(students, 3, 5); // Tr? v? -1 (không tìm th?y)
- *   int index3 = searchByID(students, 3, -1); // Tr? v? -1 (ID âm)
+ *   int index2 = searchByID(students, 3, 5); // Tr? v? -1 (khÃ´ng tÃ¬m th?y)
+ *   int index3 = searchByID(students, 3, -1); // Tr? v? -1 (ID Ã¢m)
  */
 int searchByID(struct Student students[], int count, int id) {
-    // Ki?m tra ID có h?p l? không (ID không du?c âm)
     if (id < 0) {
         return -1;
     }
     
-    // Duy?t qua m?ng d? tìm sinh viên có ID kh?p
     for (int i = 0; i < count; i++) {
         if (students[i].id == id) {
-            return i; // Tìm th?y, tr? v? ch? s?
+            return i; // TÃ¬m th?y, tr? v? ch? s?
         }
     }
     
-    // Không tìm th?y
     return -1;
 }
 
 /**
- * Hàm in thông tin m?t sinh viên
+ * HÃ m in thÃ´ng tin m?t sinh viÃªn
  * 
- * @param student Con tr? d?n sinh viên c?n in
+ * @param student Con tr? d?n sinh viÃªn c?n in
  */
 void printStudent(struct Student *student) {
     printf("\n--- Thong tin sinh vien ---\n");
@@ -186,17 +166,16 @@ void printStudent(struct Student *student) {
 }
 
 /**
- * Hàm test các tru?ng h?p tìm ki?m sinh viên theo ID
+ * HÃ m test cÃ¡c tru?ng h?p tÃ¬m ki?m sinh viÃªn theo ID
  * 
- * @param students M?ng ch?a danh sách sinh viên
- * @param count S? lu?ng sinh viên trong m?ng
+ * @param students M?ng ch?a danh sÃ¡ch sinh viÃªn
+ * @param count S? lu?ng sinh viÃªn trong m?ng
  */
 void testSearchByID(struct Student students[], int count) {
     printf("\n========== TEST TIM KIEM SINH VIEN THEO ID ==========\n");
     
-    // Test case 1: ID t?n t?i
     printf("\n--- Test case 1: Tim ID ton tai ---\n");
-    int searchId1 = students[0].id; // L?y ID c?a sinh viên d?u tiên
+    int searchId1 = students[0].id;
     int index1 = searchByID(students, count, searchId1);
     if (index1 >= 0) {
         printf("Tim thay sinh vien co ID = %d tai vi tri %d\n", searchId1, index1);
@@ -205,9 +184,8 @@ void testSearchByID(struct Student students[], int count) {
         printf("Khong tim thay sinh vien co ID = %d\n", searchId1);
     }
     
-    // Test case 2: ID không t?n t?i
     printf("\n--- Test case 2: Tim ID khong ton tai ---\n");
-    int searchId2 = 9999; // ID không t?n t?i
+    int searchId2 = 9999;
     int index2 = searchByID(students, count, searchId2);
     if (index2 >= 0) {
         printf("Tim thay sinh vien co ID = %d tai vi tri %d\n", searchId2, index2);
@@ -216,9 +194,8 @@ void testSearchByID(struct Student students[], int count) {
         printf("Khong tim thay sinh vien co ID = %d (Ket qua mong doi: -1)\n", searchId2);
     }
     
-    // Test case 3: ID âm
     printf("\n--- Test case 3: Tim ID am (khong hop le) ---\n");
-    int searchId3 = -5; // ID âm
+    int searchId3 = -5;
     int index3 = searchByID(students, count, searchId3);
     if (index3 >= 0) {
         printf("Tim thay sinh vien co ID = %d tai vi tri %d\n", searchId3, index3);
@@ -231,10 +208,10 @@ void testSearchByID(struct Student students[], int count) {
 }
 
 /**
- * Hàm kh?i t?o 10 sinh viên v?i di?m GPA khác nhau
+ * HÃ m kh?i t?o 10 sinh viÃªn v?i di?m GPA khÃ¡c nhau
  * 
- * @param students M?ng ch?a danh sách sinh viên
- * @return S? lu?ng sinh viên dã kh?i t?o (10)
+ * @param students M?ng ch?a danh sÃ¡ch sinh viÃªn
+ * @return S? lu?ng sinh viÃªn dÃ£ kh?i t?o (10)
  */
 int create10Students(struct Student students[]) {
     struct Student data[] = {
@@ -250,7 +227,7 @@ int create10Students(struct Student students[]) {
         {10, "Ngo Thi Lan", 19, 3.55}
     };
     
-    // Copy d? li?u vào m?ng students
+    // Copy d? li?u vÃ o m?ng students
     for (int i = 0; i < 10; i++) {
         students[i] = data[i];
     }
@@ -260,13 +237,13 @@ int create10Students(struct Student students[]) {
 }
 
 /**
- * Hàm tính di?m trung bình GPA c?a danh sách sinh viên
+ * HÃ m tÃ­nh di?m trung bÃ¬nh GPA c?a danh sÃ¡ch sinh viÃªn
  * 
- * @param students M?ng ch?a danh sách sinh viên
- * @param count S? lu?ng sinh viên trong m?ng
- * @return Ği?m trung bình GPA (float)
+ * @param students M?ng ch?a danh sÃ¡ch sinh viÃªn
+ * @param count S? lu?ng sinh viÃªn trong m?ng
+ * @return Ãi?m trung bÃ¬nh GPA (float)
  * 
- * @note N?u count = 0, hàm s? tr? v? 0.0 d? tránh chia cho 0
+ * @note N?u count = 0, hÃ m s? tr? v? 0.0 d? trÃ¡nh chia cho 0
  */
 float calculateAverageGPA(struct Student students[], int count) {
     if (count == 0) {
@@ -282,15 +259,15 @@ float calculateAverageGPA(struct Student students[], int count) {
 }
 
 /**
- * Hàm s?p x?p danh sách sinh viên tang d?n theo di?m GPA
+ * HÃ m s?p x?p danh sÃ¡ch sinh viÃªn tang d?n theo di?m GPA
  * 
- * @param students M?ng ch?a danh sách sinh viên c?n s?p x?p
- * @param count S? lu?ng sinh viên trong m?ng
+ * @param students M?ng ch?a danh sÃ¡ch sinh viÃªn c?n s?p x?p
+ * @param count S? lu?ng sinh viÃªn trong m?ng
  * 
- * @note S? d?ng thu?t toán Bubble Sort d? s?p x?p
- *       Hàm s? s?p x?p tr?c ti?p trên m?ng students (s?p x?p t?i ch?)
- *       Sau khi s?p x?p, sinh viên có GPA th?p nh?t s? ? d?u m?ng,
- *       sinh viên có GPA cao nh?t s? ? cu?i m?ng
+ * @note S? d?ng thu?t toÃ¡n Bubble Sort d? s?p x?p
+ *       HÃ m s? s?p x?p tr?c ti?p trÃªn m?ng students (s?p x?p t?i ch?)
+ *       Sau khi s?p x?p, sinh viÃªn cÃ³ GPA th?p nh?t s? ? d?u m?ng,
+ *       sinh viÃªn cÃ³ GPA cao nh?t s? ? cu?i m?ng
  * 
  * @example
  *   struct Student students[3] = {
@@ -302,12 +279,9 @@ float calculateAverageGPA(struct Student students[], int count) {
  *   // Sau khi s?p x?p: Tran Thi B (3.25) -> Nguyen Van A (3.75) -> Le Van C (3.92)
  */
 void sortStudentsByGPA(struct Student students[], int count) {
-    // S? d?ng thu?t toán Bubble Sort
     for (int i = 0; i < count - 1; i++) {
         for (int j = 0; j < count - i - 1; j++) {
-            // So sánh GPA c?a 2 sinh viên li?n k?
             if (students[j].gpa > students[j + 1].gpa) {
-                // Hoán d?i v? trí n?u sinh viên tru?c có GPA l?n hon
                 struct Student temp = students[j];
                 students[j] = students[j + 1];
                 students[j + 1] = temp;
@@ -317,11 +291,11 @@ void sortStudentsByGPA(struct Student students[], int count) {
 }
 
 /**
- * Hàm thêm m?t sinh viên vào danh sách
- * * @param students M?ng ch?a danh sách sinh viên
- * @param count Con tr? qu?n lı s? lu?ng sinh viên hi?n t?i (d? c?p nh?t giá tr? sau khi thêm)
- * @param maxCount Kích thu?c t?i da c?a m?ng
- * @return 1 n?u thêm thành công, 0 n?u m?ng dã d?y
+ * HÃ m thÃªm m?t sinh viÃªn vÃ o danh sÃ¡ch
+ * * @param students M?ng ch?a danh sÃ¡ch sinh viÃªn
+ * @param count Con tr? qu?n lÃ½ s? lu?ng sinh viÃªn hi?n t?i (d? c?p nh?t giÃ¡ tr? sau khi thÃªm)
+ * @param maxCount KÃ­ch thu?c t?i da c?a m?ng
+ * @return 1 n?u thÃªm thÃ nh cÃ´ng, 0 n?u m?ng dÃ£ d?y
  */
 int addStudent(struct Student students[], int *count, int maxCount) {
     if (*count >= maxCount) {
@@ -354,11 +328,11 @@ int addStudent(struct Student students[], int *count, int maxCount) {
 }
 
 /**
- * Hàm xóa sinh viên kh?i danh sách theo ID
- * * @param students M?ng ch?a danh sách sinh viên
- * @param count Con tr? qu?n lı s? lu?ng sinh viên hi?n t?i
- * @param id ID c?a sinh viên c?n xóa
- * @return 1 n?u xóa thành công, 0 n?u không tìm th?y ID
+ * HÃ m xÃ³a sinh viÃªn kh?i danh sÃ¡ch theo ID
+ * * @param students M?ng ch?a danh sÃ¡ch sinh viÃªn
+ * @param count Con tr? qu?n lÃ½ s? lu?ng sinh viÃªn hi?n t?i
+ * @param id ID c?a sinh viÃªn c?n xÃ³a
+ * @return 1 n?u xÃ³a thÃ nh cÃ´ng, 0 n?u khÃ´ng tÃ¬m th?y ID
  */
 int deleteStudentByID(struct Student students[], int *count, int id) {
     int index = searchByID(students, *count, id);
@@ -382,29 +356,29 @@ int main() {
     struct Student students[NUM_STUDENTS];
     struct Student studentsFromFile[NUM_STUDENTS];
     
-    // Nh?p thông tin sinh viên t? bàn phím
+    // Nh?p thÃ´ng tin sinh viÃªn t? bÃ n phÃ­m
     inputStudents(students, NUM_STUDENTS);
     
-    // In danh sách sinh viên du?i d?ng b?ng
+    // In danh sÃ¡ch sinh viÃªn du?i d?ng b?ng
     printf("\n========== DANH SACH SINH VIEN ==========");
     printStudentTable(students, NUM_STUDENTS);
     
-    // Luu danh sách sinh viên vào file (ví d?: student.txt cho l?p m?c d?nh)
+    // Luu danh sÃ¡ch sinh viÃªn vÃ o file (vÃ­ d?: student.txt cho l?p m?c d?nh)
     saveToFile(students, NUM_STUDENTS, "student.txt");
     
-    // Ğ?c d? li?u t? file student.txt
+    // Ã?c d? li?u t? file student.txt
     int count = readFromFile(studentsFromFile, NUM_STUDENTS);
     
-    // In d? li?u dã d?c t? file ra màn hình
+    // In d? li?u dÃ£ d?c t? file ra mÃ n hÃ¬nh
     if (count > 0) {
         printf("\n========== DANH SACH SINH VIEN DOC TU FILE ==========");
         printStudentTable(studentsFromFile, count);
     }
     
-    // Test hàm tìm ki?m sinh viên theo ID
+    // Test hÃ m tÃ¬m ki?m sinh viÃªn theo ID
     testSearchByID(students, NUM_STUDENTS);
     
-    // ========== PH?N T?O 10 SINH VIÊN VÀ TÍNH ĞI?M TRUNG BÌNH ==========
+    // ========== PH?N T?O 10 SINH VIÃŠN VÃ€ TÃNH ÃI?M TRUNG BÃŒNH ==========
     printf("\n\n");
     printf("=================================================================\n");
     printf("PHAN 2: TAO 10 SINH VIEN VA TINH DIEM TRUNG BINH GPA\n");
@@ -413,17 +387,17 @@ int main() {
     struct Student students10[10];
     int count10 = create10Students(students10);
     
-    // In danh sách 10 sinh viên
+    // In danh sÃ¡ch 10 sinh viÃªn
     printf("\n========== DANH SACH 10 SINH VIEN ==========");
     printStudentTable(students10, count10);
     
-    // Tính di?m trung bình GPA
+    // TÃ­nh di?m trung bÃ¬nh GPA
     float avgGPA = calculateAverageGPA(students10, count10);
     printf("\n========== KET QUA TINH TOAN ==========\n");
     printf("Diem trung binh GPA cua %d sinh vien: %.2f\n", count10, avgGPA);
     printf("===========================================\n");
     
-    // S?p x?p sinh viên tang d?n theo GPA
+    // S?p x?p sinh viÃªn tang d?n theo GPA
     sortStudentsByGPA(students10, count10);
     printf("\n========== DANH SACH 10 SINH VIEN SAU KHI SAP XEP TANG DAN THEO GPA ==========");
     printStudentTable(students10, count10);
@@ -434,11 +408,11 @@ int main() {
 
 	int currentCount = 0;
 
-    // 1. Gi? s? kh?i t?o 10 sinh viên tru?c
+    // 1. Gi? s? kh?i t?o 10 sinh viÃªn tru?c
     currentCount = create10Students(students);
     printStudentTable(students, currentCount);
 
-    // 3. Test ch?c nang XÓA
+    // 3. Test ch?c nang XÃ“A
     int idToDelete;
     printf("\nNhap ID sinh vien muon xoa: ");
     scanf("%d", &idToDelete);
@@ -449,6 +423,7 @@ int main() {
     
     return 0;
 }
+
 
 
 
